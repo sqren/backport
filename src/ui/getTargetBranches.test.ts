@@ -1,4 +1,4 @@
-import { BranchChoice } from '../options/ConfigOptions';
+import { TargetBranchChoice } from '../options/ConfigOptions';
 import { ValidConfigOptions } from '../options/options';
 import * as prompts from '../services/prompts';
 import { Commit } from '../types/Commit';
@@ -16,8 +16,8 @@ describe('getTargetBranches', () => {
       .mockResolvedValueOnce(['branchA']);
   });
 
-  describe('when `targetBranchesFromLabels=["7.x"]`', () => {
-    let targetBranchChoices: BranchChoice[];
+  describe('when `sourcePRLabels=["7.x"]`', () => {
+    let targetBranchChoices: TargetBranchChoice[];
     beforeEach(async () => {
       const options = ({
         targetBranches: [],
@@ -28,15 +28,14 @@ describe('getTargetBranches', () => {
           { name: '7.7' },
           { name: '7.6' },
           { name: '7.5' },
-        ] as BranchChoice[],
-        branchLabelMapping: {},
+        ] as TargetBranchChoice[],
         sourceBranch: 'master',
       } as unknown) as ValidConfigOptions;
 
       const commits = [
         {
           sourceBranch: 'master',
-          targetBranchesFromLabels: ['7.x'],
+          sourcePRLabels: ['7.x'],
           sha: 'my-sha',
           formattedMessage: '[backport] Bump to 5.1.3 (#62286)',
           originalMessage: '[backport] Bump to 5.1.3 (#62286)',
@@ -51,10 +50,10 @@ describe('getTargetBranches', () => {
 
     it('should list the correct branches', async () => {
       expect(targetBranchChoices).toEqual([
-        { checked: true, name: '7.x' },
-        { checked: false, name: '7.7' },
-        { checked: false, name: '7.6' },
-        { checked: false, name: '7.5' },
+        { name: '7.x', checked: true },
+        { name: '7.7', checked: false },
+        { name: '7.6', checked: false },
+        { name: '7.5', checked: false },
       ]);
     });
 
@@ -72,8 +71,8 @@ describe('getTargetBranches', () => {
     });
   });
 
-  describe('when `targetBranchesFromLabels=["8.0.0"]`', () => {
-    let targetBranchChoices: BranchChoice[];
+  describe('when `sourcePRLabels=["8.0.0"]`', () => {
+    let targetBranchChoices: TargetBranchChoice[];
     beforeEach(async () => {
       const options = ({
         targetBranches: [],
@@ -83,14 +82,14 @@ describe('getTargetBranches', () => {
           { name: '7.7' },
           { name: '7.6' },
           { name: '7.5' },
-        ] as BranchChoice[],
+        ] as TargetBranchChoice[],
         sourceBranch: 'master',
       } as unknown) as ValidConfigOptions;
 
       const commits = [
         {
           sourceBranch: 'master',
-          targetBranchesFromLabels: ['8.0.0'],
+          sourcePRLabels: ['8.0.0'],
           sha: 'my-sha',
           formattedMessage: '[backport] Bump to 5.1.3 (#62286)',
           originalMessage: '[backport] Bump to 5.1.3 (#62286)',
@@ -127,7 +126,7 @@ describe('getTargetBranches', () => {
         {
           formattedMessage: 'hey',
           originalMessage: 'hey',
-          targetBranchesFromLabels: [],
+          sourcePRLabels: [],
           sha: 'abcd',
           sourceBranch: '7.x',
           pullNumber: 1337,
@@ -183,47 +182,31 @@ describe('getTargetBranchChoices', () => {
       { name: '7.8', checked: false },
       { name: '7.7', checked: false },
     ],
-    branchLabelMapping: {},
   } as unknown) as ValidConfigOptions;
 
   const sourceBranch = 'master';
 
-  it('should not check any branches if no labels match', () => {
-    const targetBranchesFromLabels = [] as string[];
+  it('should pre-select default branches if no labels match', () => {
+    const sourcePRLabels = [] as string[];
     const branches = getTargetBranchChoices(
       options,
-      targetBranchesFromLabels,
+      sourcePRLabels,
       sourceBranch
     );
 
     expect(branches).toEqual([
-      { checked: false, name: '7.x' },
-      { checked: false, name: '7.8' },
-      { checked: false, name: '7.7' },
-    ]);
-  });
-
-  it('should not return default branches when running in "--ci" mode', () => {
-    const targetBranchesFromLabels = [] as string[];
-    const branches = getTargetBranchChoices(
-      { ...options, ci: true },
-      targetBranchesFromLabels,
-      sourceBranch
-    );
-
-    expect(branches).toEqual([
-      { checked: false, name: '7.x' },
+      { checked: true, name: '7.x' },
       { checked: false, name: '7.8' },
       { checked: false, name: '7.7' },
     ]);
   });
 
   it('should pre-select branches based on labels', () => {
-    const targetBranchesFromLabels = ['7.7'];
+    const sourcePRLabels = ['7.7'];
 
     const branches = getTargetBranchChoices(
       options,
-      targetBranchesFromLabels,
+      sourcePRLabels,
       sourceBranch
     );
 

@@ -1,18 +1,13 @@
-import nock from 'nock';
 import { mockGqlRequest } from '../../../test/nockHelpers';
 import { HandledError } from '../../HandledError';
 import { apiRequestV4 } from './apiRequestV4';
 
 describe('apiRequestV4', () => {
-  afterEach(() => {
-    nock.cleanAll();
-  });
-
   describe('when request succeeds', () => {
     let res: unknown;
-    let commitsByAuthorCalls: ReturnType<typeof mockGqlRequest>;
+    let getCommitsByAuthorCalls: ReturnType<typeof mockGqlRequest>;
     beforeEach(async () => {
-      commitsByAuthorCalls = mockGqlRequest<any>({
+      getCommitsByAuthorCalls = mockGqlRequest<any>({
         name: 'MyQuery',
         statusCode: 200,
         body: { data: { hello: 'world' } },
@@ -31,7 +26,7 @@ describe('apiRequestV4', () => {
     });
 
     it('should call with correct args', async () => {
-      expect(commitsByAuthorCalls).toEqual([
+      expect(getCommitsByAuthorCalls()).toEqual([
         {
           query: 'query MyQuery{ foo }',
           variables: { foo: 'bar' },

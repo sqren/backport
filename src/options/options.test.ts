@@ -1,4 +1,3 @@
-import nock from 'nock';
 import { GithubConfigOptionsResponse } from '../services/github/v4/getOptionsFromGithub/query';
 import * as logger from '../services/logger';
 import { mockGqlRequest } from '../test/nockHelpers';
@@ -46,15 +45,16 @@ describe('getOptions', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
-    nock.cleanAll();
   });
 
   it('should use the default repository branch as sourceBranch', async () => {
-    const mockCalls = mockGetGithubConfigOptions({
+    const getMockCalls = mockGetGithubConfigOptions({
       defaultBranch: 'my-default-branch',
     });
+
     const options = await getOptions(defaultArgs);
-    expect(mockCalls.length).toBe(1);
+
+    expect(getMockCalls().length).toBe(1);
     expect(options.sourceBranch).toBe('my-default-branch');
   });
 
@@ -129,10 +129,7 @@ describe('getOptions', () => {
       resetAuthor: false,
       sourceBranch: 'some-branch-name',
       sourcePRLabels: [],
-      targetBranchChoices: [
-        { checked: false, name: '6.0' },
-        { checked: false, name: '5.9' },
-      ],
+      targetBranchChoices: [{ name: '6.0' }, { name: '5.9' }],
       targetBranches: ['6.0', '6.1'],
       targetPRLabels: [],
       upstream: 'elastic/kibana',

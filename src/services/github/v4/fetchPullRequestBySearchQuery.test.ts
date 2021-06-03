@@ -1,4 +1,3 @@
-import nock from 'nock';
 import { ValidConfigOptions } from '../../../options/options';
 import { mockGqlRequest } from '../../../test/nockHelpers';
 import { PromiseReturnType } from '../../../types/PromiseReturnType';
@@ -10,10 +9,10 @@ import { fetchPullRequestBySearchQueryMock } from './mocks/fetchPullRequestBySea
 
 describe('fetchPullRequestBySearchQuery', () => {
   let res: PromiseReturnType<typeof fetchPullRequestBySearchQuery>;
-  let mockCalls: ReturnType<typeof mockGqlRequest>;
+  let getMockCalls: ReturnType<typeof mockGqlRequest>;
 
   beforeEach(async () => {
-    mockCalls = mockGqlRequest<PullRequestBySearchQueryResponse>({
+    getMockCalls = mockGqlRequest<PullRequestBySearchQueryResponse>({
       name: 'PullRequestBySearchQuery',
       statusCode: 200,
       body: { data: fetchPullRequestBySearchQueryMock },
@@ -32,11 +31,8 @@ describe('fetchPullRequestBySearchQuery', () => {
     } as ValidConfigOptions);
   });
 
-  afterEach(() => {
-    nock.cleanAll();
-  });
-
   it('should make request with correct variables', () => {
+    const mockCalls = getMockCalls();
     expect(mockCalls.length).toBe(1);
     expect(mockCalls[0].variables).toEqual({
       maxNumber: 10,
@@ -63,7 +59,11 @@ describe('fetchPullRequestBySearchQuery', () => {
           "pullNumber": 76492,
           "sha": "e0f4775b780aada005bdd1774edcceac0ffee006",
           "sourceBranch": "master",
-          "targetBranchesFromLabels": Array [],
+          "sourcePRLabels": Array [
+            "Team:apm",
+            "release_note:skip",
+            "v7.10.0",
+          ],
         },
         Object {
           "existingTargetPullRequests": Array [
@@ -80,7 +80,11 @@ describe('fetchPullRequestBySearchQuery', () => {
           "pullNumber": 76638,
           "sha": "fae1e02e0f7a475bf92da05be52a817aa2a84959",
           "sourceBranch": "master",
-          "targetBranchesFromLabels": Array [],
+          "sourcePRLabels": Array [
+            "Team:apm",
+            "release_note:fix",
+            "v7.10.0",
+          ],
         },
         Object {
           "existingTargetPullRequests": Array [
@@ -102,7 +106,12 @@ describe('fetchPullRequestBySearchQuery', () => {
           "pullNumber": 73120,
           "sha": "aa68e3b63a4b513294dc58eaf4422e66a0beffb1",
           "sourceBranch": "master",
-          "targetBranchesFromLabels": Array [],
+          "sourcePRLabels": Array [
+            "Team:apm",
+            "release_note:skip",
+            "v7.10.0",
+            "v7.9.0",
+          ],
         },
         Object {
           "existingTargetPullRequests": Array [],
@@ -117,7 +126,12 @@ describe('fetchPullRequestBySearchQuery', () => {
           "pullNumber": 72599,
           "sha": "2fc7112ec27a9f8ded0e2f9e097613721f1179dd",
           "sourceBranch": "master",
-          "targetBranchesFromLabels": Array [],
+          "sourcePRLabels": Array [
+            "Team:apm",
+            "backport:skip",
+            "release_note:skip",
+            "v8.0.0",
+          ],
         },
         Object {
           "existingTargetPullRequests": Array [
@@ -137,7 +151,12 @@ describe('fetchPullRequestBySearchQuery', () => {
           "pullNumber": 72797,
           "sha": "7e126bfab6a3bfc44f9fa50feecfe22b4634e1a0",
           "sourceBranch": "master",
-          "targetBranchesFromLabels": Array [],
+          "sourcePRLabels": Array [
+            "Team:apm",
+            "release_note:skip",
+            "v7.10.0",
+            "v7.9.0",
+          ],
         },
         Object {
           "existingTargetPullRequests": Array [
@@ -152,7 +171,13 @@ describe('fetchPullRequestBySearchQuery', () => {
           "pullNumber": 69143,
           "sha": "d12208c7ea9513529ea1aff42d154db89e3573ff",
           "sourceBranch": "master",
-          "targetBranchesFromLabels": Array [],
+          "sourcePRLabels": Array [
+            "Team:apm",
+            "apm-test-plan-7.9.0",
+            "apm-test-plan-done",
+            "release_note:enhancement",
+            "v7.9.0",
+          ],
         },
         Object {
           "existingTargetPullRequests": Array [
@@ -167,7 +192,13 @@ describe('fetchPullRequestBySearchQuery', () => {
           "pullNumber": 71655,
           "sha": "f760d8513b0216a73e9a476661f0fb8fb0887a61",
           "sourceBranch": "master",
-          "targetBranchesFromLabels": Array [],
+          "sourcePRLabels": Array [
+            "Team:apm",
+            "apm-test-plan-7.9.0",
+            "apm-test-plan-done",
+            "release_note:deprecation",
+            "v7.9.0",
+          ],
         },
         Object {
           "existingTargetPullRequests": Array [
@@ -187,7 +218,12 @@ describe('fetchPullRequestBySearchQuery', () => {
           "pullNumber": 72614,
           "sha": "05ee3da80db34ccf93e7424aa2704c098a1b49fa",
           "sourceBranch": "master",
-          "targetBranchesFromLabels": Array [],
+          "sourcePRLabels": Array [
+            "Team:apm",
+            "release_note:skip",
+            "v7.10.0",
+            "v7.9.0",
+          ],
         },
         Object {
           "existingTargetPullRequests": Array [
@@ -207,7 +243,13 @@ describe('fetchPullRequestBySearchQuery', () => {
           "pullNumber": 71661,
           "sha": "51a862988c344b34bd9da57dd57008df12e1b5e5",
           "sourceBranch": "master",
-          "targetBranchesFromLabels": Array [],
+          "sourcePRLabels": Array [
+            "Team:apm",
+            "apm-test-plan-7.9.0",
+            "apm-test-plan-done",
+            "release_note:skip",
+            "v7.9.0",
+          ],
         },
         Object {
           "existingTargetPullRequests": Array [
@@ -241,7 +283,12 @@ describe('fetchPullRequestBySearchQuery', () => {
           "pullNumber": 72316,
           "sha": "511e4543a7828cf0cdb157b88b01352947e0384f",
           "sourceBranch": "master",
-          "targetBranchesFromLabels": Array [],
+          "sourcePRLabels": Array [
+            "Team:apm",
+            "release_note:skip",
+            "v7.10.0",
+            "v7.9.0",
+          ],
         },
       ]
     `);

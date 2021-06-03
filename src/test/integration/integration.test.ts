@@ -1,5 +1,4 @@
 import { once } from 'lodash';
-import nock from 'nock';
 import { getOptions } from '../../options/options';
 import { runWithOptions } from '../../runWithOptions';
 import { PromiseReturnType } from '../../types/PromiseReturnType';
@@ -16,10 +15,6 @@ jest.unmock('del');
 jest.unmock('../../services/child-process-promisified');
 
 describe('integration', () => {
-  afterAll(() => {
-    nock.cleanAll();
-  });
-
   describe('when a single commit is backported', () => {
     let res: PromiseReturnType<typeof runWithOptions>;
     let spies: ReturnType<typeof createSpies>;
@@ -46,7 +41,7 @@ describe('integration', () => {
     });
 
     it('sends the correct http body when creating pull request', () => {
-      expect(spies.createPullRequestCalls).toEqual([
+      expect(spies.getCreatePullRequestCalls()).toEqual([
         {
           base: '6.0',
           body: 'Backports the following commits to 6.0:\n - Add witch (#85)',
@@ -57,9 +52,9 @@ describe('integration', () => {
     });
 
     it('should make correct API requests', () => {
-      expect(spies.getGithubConfigOptionsCalls).toMatchSnapshot();
-      expect(spies.authorIdCalls).toMatchSnapshot();
-      expect(spies.commitsByAuthorCalls).toMatchSnapshot();
+      expect(spies.getGithubConfigOptionsCalls()).toMatchSnapshot();
+      expect(spies.getAuthorIdCalls()).toMatchSnapshot();
+      expect(spies.getCommitsByAuthorCalls()).toMatchSnapshot();
     });
 
     it('should not create new branches in origin (backport-org/backport-demo)', async () => {
@@ -114,7 +109,7 @@ describe('integration', () => {
     );
 
     it('sends the correct http body when creating pull request', () => {
-      expect(spies.createPullRequestCalls).toEqual([
+      expect(spies.getCreatePullRequestCalls()).toEqual([
         {
           title: '[6.0] Add witch (#85) | Add 👻 (2e63475c)',
           head: 'sqren:backport/6.0/pr-85_commit-2e63475c',
@@ -132,9 +127,9 @@ describe('integration', () => {
     });
 
     it('should make correct API requests', () => {
-      expect(spies.getGithubConfigOptionsCalls).toMatchSnapshot();
-      expect(spies.authorIdCalls).toMatchSnapshot();
-      expect(spies.commitsByAuthorCalls).toMatchSnapshot();
+      expect(spies.getGithubConfigOptionsCalls()).toMatchSnapshot();
+      expect(spies.getAuthorIdCalls()).toMatchSnapshot();
+      expect(spies.getCommitsByAuthorCalls()).toMatchSnapshot();
     });
 
     it('should not create new branches in origin (backport-org/backport-demo)', async () => {
@@ -203,7 +198,7 @@ describe('integration', () => {
     );
 
     it('sends the correct http body when creating pull request', () => {
-      expect(spies.createPullRequestCalls).toEqual([
+      expect(spies.getCreatePullRequestCalls()).toEqual([
         {
           base: '6.0',
           body: 'Backports the following commits to 6.0:\n - Add witch (#85)',
